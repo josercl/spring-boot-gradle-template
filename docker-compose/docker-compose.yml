@@ -1,11 +1,9 @@
 version: '3.1'
 services:
-  artifact-mysql:
+  mysql:
     image: mysql
     ports:
       - "3306:3306"
-    networks:
-      - artifact-network
     environment:
       - MYSQL_DATABASE=db_name
       - MYSQL_USER=username
@@ -13,19 +11,12 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     command: "--default-authentication-plugin=mysql_native_password"
 
-  artifact-postgres:
+  postgres:
     image: postgres:14
-    container_name: postgres
     ports:
       - "5432:5432"
-    networks:
-      - artifact-network
     environment:
       - POSTGRES_DB=db_name
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
     command: "postgres"
-
-networks:
-  artifact-network:
-    name: artifact-network
