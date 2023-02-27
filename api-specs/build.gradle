@@ -1,0 +1,90 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.9'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "org.openapi.generator" version "6.3.0"
+}
+
+ext {
+    serverFolder = "$buildDir/generated/server/"
+    clientFolder = "$buildDir/generated/client/"
+    serverPackage = "${rootProject.group}.rest.server"
+    clientPackage = "${rootProject.group}.rest.client"
+    apiInputSpec = "$projectDir/src/main/resources/api-spec.yaml"
+}
+
+sourceSets {
+    main {
+        java.srcDirs += "$serverFolder/src/main/java"
+        java.srcDirs += "$clientFolder/src/main/java"
+    }
+}
+
+dependencies {
+    implementation project(':common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.data:spring-data-commons'
+
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    implementation "io.swagger.core.v3:swagger-annotations:2.2.7"
+}
+
+tasks.compileJava.dependsOn('generate-server')
+
+tasks.register('generate-server', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
+    generatorName = "spring"
+    inputSpec = apiInputSpec
+    outputDir = serverFolder
+    modelNameSuffix = 'DTO'
+    groupId = "${rootProject.group}"
+    version = "${rootProject.version}"
+    typeMappings = ['OffsetDateTime': 'LocalDateTime',]
+    importMappings = ['java.time.OffsetDateTime': 'java.time.LocalDateTime',
+                      'PageableDTO'             : 'org.springframework.data.domain.Pageable',]
+    schemaMappings = ['Pageable': 'org.springframework.data.domain.Pageable']
+    configOptions = ['apiPackage'           : "${serverPackage}.api",
+                     'invokerPackage'       : "${serverPackage}.invoker",
+                     'modelPackage'         : "${serverPackage}.model",
+                     'openApiNullable'      : 'false',
+                     'artifactId'           : 'artifact-api-specs-server',
+                     'interfaceOnly'        : 'true',
+                     'serializableModel'    : 'true',
+                     'useBeanValidation'    : 'true',
+                     'generateModelTests'   : 'false',
+                     'generateApiTests'     : 'false',
+                     'performBeanValidation': 'true',
+                     'dateLibrary'          : "java8",
+                     'booleanGetterPrefix'  : 'is',
+                     'returnSuccessCode'    : 'true',]
+}
+
+tasks.register('generate-client', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
+    generatorName = "java"
+    inputSpec = apiInputSpec
+    outputDir = clientFolder
+    modelNameSuffix = 'DTO'
+    groupId = "${rootProject.group}"
+    version = "${rootProject.version}"
+    typeMappings = ['OffsetDateTime': 'LocalDateTime',]
+    importMappings = ['java.time.OffsetDateTime': 'java.time.LocalDateTime',]
+    configOptions = [
+        'library'              : 'native',
+        'apiPackage'           : "${clientPackage}.api",
+        'invokerPackage'       : "${clientPackage}.invoker",
+        'modelPackage'         : "${clientPackage}.model",
+        'openApiNullable'      : 'false',
+        'artifactId'           : 'artifact-api-specs-client',
+        'interfaceOnly'        : 'true',
+        'serializableModel'    : 'true',
+        'generateModelTests'   : 'false',
+        'generateApiTests'     : 'false',
+        'performBeanValidation': 'false',
+        'dateLibrary'          : "java8",
+        'booleanGetterPrefix'  : 'is',
+    ]
+}
+
+apply plugin: 'org.openapi.generator'
