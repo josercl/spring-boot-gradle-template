@@ -47,7 +47,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Persons"
+                $ref: "#/components/schemas/PersonPage"
         default:
           description: unexpected error
           content:
@@ -57,6 +57,29 @@ paths:
 
 components:
   schemas:
+    GenericPage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            size:
+              type: integer
+            total_elements:
+              type: integer
+            total_pages:
+              type: integer
+    PersonPage:
+      allOf:
+        - $ref: '#/components/schemas/GenericPage'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Person'
     Pageable:
       type: object
       properties:
