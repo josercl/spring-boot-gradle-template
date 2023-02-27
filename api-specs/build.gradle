@@ -57,8 +57,7 @@ tasks.register('generate-server', org.openapitools.generator.gradle.plugin.tasks
                      'generateApiTests'     : 'false',
                      'performBeanValidation': 'true',
                      'dateLibrary'          : "java8",
-                     'booleanGetterPrefix'  : 'is',
-                     'returnSuccessCode'    : 'true',]
+                     'booleanGetterPrefix'  : 'is',]
 }
 
 tasks.register('generate-client', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
