@@ -73,13 +73,13 @@ components:
               type: integer
     PersonPage:
       allOf:
-        - $ref: '#/components/schemas/GenericPage'
         - type: object
           properties:
             data:
               type: array
               items:
                 $ref: '#/components/schemas/Person'
+        - $ref: '#/components/schemas/GenericPage'
     Pageable:
       type: object
       properties:
