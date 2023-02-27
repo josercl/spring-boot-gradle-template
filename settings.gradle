@@ -1,4 +1,4 @@
-rootProject.name = 'artifact'
+rootProject.name = 'testing'
 include ':api-specs'
 include ':application'
 include ':boot'
