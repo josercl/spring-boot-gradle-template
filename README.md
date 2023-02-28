@@ -19,7 +19,10 @@ Código para clientes:
 Para generar el jar de cliente:
 
 ```bash
-cd api-specs/build/generated/client && mvn clean package
+cd api-specs/build/generated/client
+chmod +x ./gradlew
+./gradlew jar
+./gradlew publishMavenPublicationToMavenLocal
 ```
 
 # Generar entidades, modelo, servicios, repos, etc.
