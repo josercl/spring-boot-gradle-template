@@ -19,11 +19,7 @@ public interface IGenerator {
         return builder.build();
     }
 
-    default String domainName(String name) {
-        return String.format("%sDomain", name);
-    }
-
     default String portName(String name) {
-        return String.format("%sPort", name);
+        return String.format("%s%s", name, Constants.Domain.PORT_SUFFIX);
     }
 }
