@@ -4,7 +4,10 @@ import com.gitlab.josercl.generator.Constants;
 import com.gitlab.josercl.generator.IGenerator;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.text.CaseUtils;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
@@ -32,6 +35,9 @@ public class DomainGenerator implements IGenerator {
         TypeSpec serviceImplSpec = getServiceImplSpec(serviceFile);
         JavaFile serviceImplFile = JavaFile.builder(Constants.Domain.API_IMPL_PACKAGE, serviceImplSpec).build();
         serviceImplFile.writeToPath(domainPath);
+
+        TypeSpec exceptionSpec = getExceptionSpec(entityName);
+        JavaFile.builder(Constants.Domain.EXCEPTION_PACKAGE, exceptionSpec).build().writeToPath(domainPath);
     }
 
     private TypeSpec getPortSpec(String entityName) {
@@ -41,15 +47,40 @@ public class DomainGenerator implements IGenerator {
     }
 
     private TypeSpec getServiceSpec(String entityName) {
-        return TypeSpec.interfaceBuilder(String.format("%s%s", entityName, Constants.Domain.SERVICE_SUFFIX))
+        return TypeSpec.interfaceBuilder(String.format("%s%s", CaseUtils.toCamelCase(entityName, true), Constants.Domain.SERVICE_SUFFIX))
             .addModifiers(Modifier.PUBLIC)
             .build();
     }
 
     private TypeSpec getServiceImplSpec(JavaFile serviceFile) {
-        return TypeSpec.classBuilder(String.format("%s%s", serviceFile.typeSpec.name, "Impl"))
+        return TypeSpec.classBuilder(String.format("%s %s", serviceFile.typeSpec.name, "Impl"))
             .addModifiers(Modifier.PUBLIC)
             .addSuperinterface(ClassName.get(serviceFile.packageName, serviceFile.typeSpec.name))
+            .build();
+    }
+
+    private TypeSpec getExceptionSpec(String entityName) {
+
+        ParameterSpec idParameterSpec = ParameterSpec.builder(
+            Long.class,
+            CaseUtils.toCamelCase(String.format("%s %s", entityName, "id"), false)
+        ).build();
+
+        return TypeSpec.classBuilder(
+                CaseUtils.toCamelCase(
+                    String.format("%s not found exception", entityName),
+                    true
+                )
+            )
+            .addModifiers(Modifier.PUBLIC)
+            .superclass(ClassName.get(Constants.Domain.EXCEPTION_PACKAGE, "RecordNotFoundException"))
+            .addMethod(
+                MethodSpec.constructorBuilder()
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(idParameterSpec)
+                    .addStatement("super($S + $L)", entityName + " not found: ", idParameterSpec.name)
+                    .build()
+            )
             .build();
     }
 }

@@ -52,7 +52,12 @@ public class ApplicationGenerator implements IGenerator {
         ParameterSpec serviceParam = ParameterSpec.builder(serviceType, "service").build();
         ParameterSpec mapperParam = ParameterSpec.builder(mapperType, "mapper").build();
 
-        return TypeSpec.classBuilder(String.format("%s%s", entityName, Constants.Application.CONTROLLER_SUFFIX))
+        return TypeSpec.classBuilder(
+                CaseUtils.toCamelCase(
+                    String.format("%s %s", entityName, Constants.Application.CONTROLLER_SUFFIX),
+                    true
+                )
+            )
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(RestController.class)
             .addField(serviceField)
@@ -69,7 +74,12 @@ public class ApplicationGenerator implements IGenerator {
     }
 
     private TypeSpec getMapperSpec(String entityName) {
-        return TypeSpec.interfaceBuilder(String.format("%s%s", entityName, "Mapper"))
+        return TypeSpec.interfaceBuilder(
+                CaseUtils.toCamelCase(
+                    String.format("%s %s", entityName, Constants.MAPPER_SUFFIX),
+                    true
+                )
+            )
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(
                 AnnotationSpec.builder(Mapper.class)

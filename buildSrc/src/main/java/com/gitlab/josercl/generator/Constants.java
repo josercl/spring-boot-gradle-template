@@ -18,6 +18,7 @@ public class Constants {
         public static final String MODEL_PACKAGE = "model";
         public static final String SPI_PACKAGE = "spi";
         public static final String API_PACKAGE = "api";
+        public static final String EXCEPTION_PACKAGE = "exception";
         public static final String API_IMPL_PACKAGE = API_PACKAGE + ".impl";
         public static final String SERVICE_SUFFIX = "Service";
         public static final String PORT_SUFFIX = "Port";

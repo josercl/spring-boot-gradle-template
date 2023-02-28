@@ -41,7 +41,7 @@ public class InfraGenerator implements IGenerator {
             .build();
 
         TypeSpec entitySpec = getEntitySpec(
-            String.format("%s%s", entityName, Constants.Infrastructure.MODEL_SUFFIX),
+            String.format("%s %s", entityName, Constants.Infrastructure.MODEL_SUFFIX),
             List.of(Data.class, Entity.class),
             List.of(idFieldSpec)
         );
