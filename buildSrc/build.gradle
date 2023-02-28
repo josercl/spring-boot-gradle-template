@@ -1,0 +1,13 @@
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation 'org.apache.commons:commons-text:1.10.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.9'
+    implementation 'com.squareup:javapoet:1.13.0'
+}

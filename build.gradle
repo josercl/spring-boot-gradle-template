@@ -22,3 +22,7 @@ subprojects {
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     }
 }
+
+tasks.register('generate', com.gitlab.josercl.tasks.GeneratorTask) {
+    group = 'code'
+}

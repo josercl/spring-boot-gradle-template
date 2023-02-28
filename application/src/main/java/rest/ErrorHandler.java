@@ -22,28 +22,28 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({RecordNotFoundException.class})
     protected ResponseEntity<ErrorDTO> handleRecordNotFoundException(RecordNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(
-                        new ErrorDTO()
-                                .code(HttpStatus.NOT_FOUND.value())
-                                .message(ex.getMessage())
-                );
+            .body(
+                new ErrorDTO()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(ex.getMessage())
+            );
     }
 
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<ValidationError> errorList = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .collect(Collectors.groupingBy(
-                        FieldError::getField,
-                        Collectors.mapping(DefaultMessageSourceResolvable::getDefaultMessage, Collectors.toList())
-                ))
-                .entrySet()
-                .stream()
-                .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
-                .toList();
+            .getFieldErrors()
+            .stream()
+            .collect(Collectors.groupingBy(
+                FieldError::getField,
+                Collectors.mapping(DefaultMessageSourceResolvable::getDefaultMessage, Collectors.toList())
+            ))
+            .entrySet()
+            .stream()
+            .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
+            .toList();
 
         return ResponseEntity.unprocessableEntity()
-                .body(errorList);
+            .body(errorList);
     }
 }
