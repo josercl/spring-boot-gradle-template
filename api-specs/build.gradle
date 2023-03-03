@@ -1,6 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.9'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java-library'
+    id 'org.springframework.boot' version '3.0.3'
+    id 'io.spring.dependency-management' version '1.1.0'
     id "org.openapi.generator" version "6.3.0"
 }
 
@@ -22,12 +23,13 @@ sourceSets {
 dependencies {
     implementation project(':common')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.data:spring-data-commons'
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.data:spring-data-commons'
 
-    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    compileOnly 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+    compileOnly 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+//    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+//    implementation 'javax.validation:validation-api:2.0.1.Final'
 
     implementation "io.swagger.core.v3:swagger-annotations:2.2.7"
 }
@@ -43,22 +45,27 @@ tasks.register('generate-server', org.openapitools.generator.gradle.plugin.tasks
     groupId = "${rootProject.group}"
     version = "${rootProject.version}"
     typeMappings = ['OffsetDateTime': 'LocalDateTime',]
-    importMappings = ['java.time.OffsetDateTime': 'java.time.LocalDateTime',
-                      'PageableDTO'             : 'org.springframework.data.domain.Pageable',]
+    importMappings = [
+        'java.time.OffsetDateTime': 'java.time.LocalDateTime',
+        'PageableDTO'             : 'org.springframework.data.domain.Pageable'
+    ]
     schemaMappings = ['Pageable': 'org.springframework.data.domain.Pageable']
-    configOptions = ['apiPackage'           : "${serverPackage}.api",
-                     'invokerPackage'       : "${serverPackage}.invoker",
-                     'modelPackage'         : "${serverPackage}.model",
-                     'openApiNullable'      : 'false',
-                     'artifactId'           : "${rootProject.name}-api-server",
-                     'interfaceOnly'        : 'true',
-                     'serializableModel'    : 'true',
-                     'useBeanValidation'    : 'true',
-                     'generateModelTests'   : 'false',
-                     'generateApiTests'     : 'false',
-                     'performBeanValidation': 'true',
-                     'dateLibrary'          : "java8",
-                     'booleanGetterPrefix'  : 'is',]
+    configOptions = [
+        'apiPackage'           : "${serverPackage}.api",
+        'invokerPackage'       : "${serverPackage}.invoker",
+        'modelPackage'         : "${serverPackage}.model",
+        'openApiNullable'      : 'false',
+        'artifactId'           : "${rootProject.name}-api-server",
+        'interfaceOnly'        : 'true',
+        'serializableModel'    : 'true',
+        'useBeanValidation'    : 'true',
+        'generateModelTests'   : 'false',
+        'generateApiTests'     : 'false',
+        'performBeanValidation': 'true',
+        'dateLibrary'          : "java8",
+        'booleanGetterPrefix'  : 'is',
+        'useSpringBoot3'       : 'true',
+    ]
 }
 
 tasks.register('generate-client', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
@@ -72,19 +79,21 @@ tasks.register('generate-client', org.openapitools.generator.gradle.plugin.tasks
     typeMappings = ['OffsetDateTime': 'LocalDateTime',]
     importMappings = ['java.time.OffsetDateTime': 'java.time.LocalDateTime',]
     configOptions = [
-        'library'              : 'native',
-        'apiPackage'           : "${clientPackage}.api",
-        'invokerPackage'       : "${clientPackage}.invoker",
-        'modelPackage'         : "${clientPackage}.model",
-        'openApiNullable'      : 'false',
-        'artifactId'           : "${rootProject.name}-api-client",
-        'interfaceOnly'        : 'true',
-        'serializableModel'    : 'true',
-        'generateModelTests'   : 'false',
-        'generateApiTests'     : 'false',
-        'performBeanValidation': 'false',
-        'dateLibrary'          : "java8",
-        'booleanGetterPrefix'  : 'is',
+        'library'                : 'native',
+        'apiPackage'             : "${clientPackage}.api",
+        'invokerPackage'         : "${clientPackage}.invoker",
+        'modelPackage'           : "${clientPackage}.model",
+        'openApiNullable'        : 'false',
+        'artifactId'             : "${rootProject.name}-api-client",
+        'hideGenerationTimestamp': 'true',
+        'interfaceOnly'          : 'true',
+        'serializableModel'      : 'true',
+        'generateModelTests'     : 'false',
+        'generateApiTests'       : 'false',
+        'dateLibrary'            : "java8",
+        'booleanGetterPrefix'    : 'is',
+        'useAbstractionForFiles' : 'true',
+        'useJakartaEe'           : 'true'
     ]
 }
 

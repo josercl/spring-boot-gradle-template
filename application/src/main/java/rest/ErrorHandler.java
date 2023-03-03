@@ -1,6 +1,7 @@
 package rest;
 
 import exception.RecordNotFoundException;
+import org.springframework.http.HttpStatusCode;
 import rest.response.ValidationError;
 import my.group.rest.server.model.ErrorDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -30,7 +31,12 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+        MethodArgumentNotValidException ex,
+        HttpHeaders headers,
+        HttpStatusCode status,
+        WebRequest request
+    ) {
         List<ValidationError> errorList = ex.getBindingResult()
             .getFieldErrors()
             .stream()

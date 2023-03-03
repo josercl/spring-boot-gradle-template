@@ -8,7 +8,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     implementation 'org.apache.commons:commons-text:1.10.0'
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.9'
-    implementation 'org.springframework:spring-web:5.3.25'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.2'
+    implementation 'org.springframework:spring-web:6.0.4'
     implementation 'com.squareup:javapoet:1.13.0'
 }
