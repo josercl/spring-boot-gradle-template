@@ -10,6 +10,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.apache.commons.text.CaseUtils;
 import org.mapstruct.Mapper;
@@ -18,9 +21,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.lang.model.element.Modifier;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -35,7 +35,7 @@ public class InfraGenerator implements IGenerator {
             .addAnnotation(Id.class)
             .addAnnotation(
                 AnnotationSpec.builder(GeneratedValue.class)
-                    .addMember("strategy", "$L", "javax.persistence.GenerationType.IDENTITY")
+                    .addMember("strategy", "$L", "jakarta.persistence.GenerationType.IDENTITY")
                     .build()
             )
             .build();

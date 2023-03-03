@@ -53,7 +53,7 @@ public class DomainGenerator implements IGenerator {
     }
 
     private TypeSpec getServiceImplSpec(JavaFile serviceFile) {
-        return TypeSpec.classBuilder(String.format("%s %s", serviceFile.typeSpec.name, "Impl"))
+        return TypeSpec.classBuilder(CaseUtils.toCamelCase(String.format("%s %s", serviceFile.typeSpec.name, "Impl"), true))
             .addModifiers(Modifier.PUBLIC)
             .addSuperinterface(ClassName.get(serviceFile.packageName, serviceFile.typeSpec.name))
             .build();
