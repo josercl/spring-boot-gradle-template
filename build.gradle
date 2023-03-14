@@ -27,3 +27,12 @@ subprojects {
 tasks.register('generate', com.gitlab.josercl.tasks.GeneratorTask) {
     group = 'code'
 }
+
+tasks.register('dockerize', Exec) {
+    dependsOn ':boot:bootJar'
+
+    commandLine 'docker', 'build',
+        '-t', "${project.name}:${project.version}",
+        '-t', "${project.name}:latest",
+        '.'
+}

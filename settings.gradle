@@ -1,4 +1,4 @@
-rootProject.name = 'testing'
+rootProject.name = 'spring-boot-gradle-template'
 include ':api-specs'
 include ':application'
 include ':boot'
