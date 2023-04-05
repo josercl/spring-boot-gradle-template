@@ -4,6 +4,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
+tasks.bootJar { enabled = false }
+tasks.bootRun { enabled = false }
+
 dependencies {
     implementation project(':domain')
     implementation project(':api-specs')

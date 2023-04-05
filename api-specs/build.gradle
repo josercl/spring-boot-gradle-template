@@ -34,6 +34,9 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations:2.2.7"
 }
 
+tasks.bootJar { enabled = false }
+tasks.bootRun { enabled = false }
+
 tasks.compileJava.dependsOn('generate-server')
 
 tasks.register('generate-server', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
