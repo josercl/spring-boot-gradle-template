@@ -28,7 +28,7 @@ chmod +x ./gradlew
 # Generar entidades, modelo, servicios, repos, etc.
 
 ```bash
-./gradlew generate -Pentities=clase1,clase2,...,claseN
+./gradlew generate -Pentities=clase1,clase2,...,claseN [-Ponly=domain|app|infra] [-PbasePackage=xxx.yyy.zzz]
 ```
 
 Eso genera clases entidad, clase de dominio, mappers, repositorios, ports, adapters y servicios usando como base el(los)

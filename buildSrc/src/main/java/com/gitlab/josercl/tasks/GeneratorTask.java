@@ -23,6 +23,8 @@ abstract class GeneratorTask extends DefaultTask {
 
         Object only = getProject().getProperties().getOrDefault("only", null);
 
+        Object basePackage = getProject().getProperties().getOrDefault("basePackage", null);
+
         List<IGenerator> generatorsToUse = new ArrayList<>();
 
         if (only == null) {
@@ -35,15 +37,15 @@ abstract class GeneratorTask extends DefaultTask {
             for (String s : onlies) {
                 switch (s) {
                     case "domain" -> generatorsToUse.add(new DomainGenerator());
-                    case "infra" -> generatorsToUse.add(new InfraGenerator());
-                    case "application" -> generatorsToUse.add(new ApplicationGenerator());
+                    case "infra", "infrastructure" -> generatorsToUse.add(new InfraGenerator());
+                    case "application", "app" -> generatorsToUse.add(new ApplicationGenerator());
                 }
             }
         }
 
         for (String entity : ((String) entities).split(",")) {
             for (IGenerator iGenerator : generatorsToUse) {
-                iGenerator.generate(entity);
+                iGenerator.generate(entity, (String) basePackage);
             }
         }
     }

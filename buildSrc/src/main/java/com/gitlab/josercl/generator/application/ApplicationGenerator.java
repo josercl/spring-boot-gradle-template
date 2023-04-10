@@ -10,6 +10,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.text.CaseUtils;
+import org.gradle.internal.impldep.org.glassfish.jaxb.runtime.v2.runtime.reflect.opt.Const;
 import org.mapstruct.Mapper;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,24 +18,27 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class ApplicationGenerator implements IGenerator {
+public class ApplicationGenerator extends IGenerator {
 
     private final Path applicationPath = Path.of("application/src/main/java");
 
     @Override
-    public void generate(String entityName) throws IOException {
+    public void generate(String entityName, String basePackage) throws IOException {
+        String mapperPackage = getPackage(basePackage, Constants.Application.MAPPER_PACKAGE);
+        createDirectories(mapperPackage, applicationPath);
         TypeSpec mapperSpec = getMapperSpec(entityName);
-        JavaFile mapperFile = JavaFile.builder(Constants.Application.MAPPER_PACKAGE, mapperSpec).build();
+        JavaFile mapperFile = JavaFile.builder(mapperPackage, mapperSpec).build();
         mapperFile.writeToPath(applicationPath);
 
-        TypeSpec controllerSpec = getControllerSpec(entityName, mapperFile);
-        JavaFile controllerFile = JavaFile.builder(Constants.Application.CONTROLLER_PACKAGE, controllerSpec).build();
+        String controllerPackage = getPackage(basePackage, Constants.Application.CONTROLLER_PACKAGE);
+        TypeSpec controllerSpec = getControllerSpec(entityName, mapperFile, basePackage);
+        JavaFile controllerFile = JavaFile.builder(controllerPackage, controllerSpec).build();
         controllerFile.writeToPath(applicationPath);
     }
 
-    private TypeSpec getControllerSpec(String entityName, JavaFile mapperFile) {
+    private TypeSpec getControllerSpec(String entityName, JavaFile mapperFile, String basePackage) {
         ClassName serviceType = ClassName.get(
-            Constants.Domain.API_PACKAGE,
+            getPackage(basePackage, Constants.Domain.API_PACKAGE),
             String.format("%s%s", CaseUtils.toCamelCase(entityName, true), Constants.Domain.SERVICE_SUFFIX)
         );
         ClassName mapperType = ClassName.get(

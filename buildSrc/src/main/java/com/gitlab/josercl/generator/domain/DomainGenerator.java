@@ -14,30 +14,40 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class DomainGenerator implements IGenerator {
+public class DomainGenerator extends IGenerator {
 
     private final Path domainPath = Path.of("domain/src/main/java");
 
     @Override
-    public void generate(String entityName) throws IOException {
+    public void generate(String entityName, String basePackage) throws IOException {
+        String modelPackage = getPackage(basePackage, Constants.Domain.MODEL_PACKAGE);
+        createDirectories(modelPackage, domainPath);
         TypeSpec entityDomainSpec = getEntitySpec(entityName, List.of(), List.of());
-        JavaFile domainModelFile = JavaFile.builder(Constants.Domain.MODEL_PACKAGE, entityDomainSpec).build();
+        JavaFile domainModelFile = JavaFile.builder(modelPackage, entityDomainSpec).build();
         domainModelFile.writeToPath(domainPath);
 
+        String portPackage = getPackage(basePackage, Constants.Domain.SPI_PACKAGE);
+        createDirectories(portPackage, domainPath);
         TypeSpec portSpec = getPortSpec(entityName);
-        JavaFile portFile = JavaFile.builder(Constants.Domain.SPI_PACKAGE, portSpec).build();
+        JavaFile portFile = JavaFile.builder(portPackage, portSpec).build();
         portFile.writeToPath(domainPath);
 
+        String servicePackage = getPackage(basePackage, Constants.Domain.API_PACKAGE);
+        createDirectories(servicePackage, domainPath);
         TypeSpec serviceSpec = getServiceSpec(entityName);
-        JavaFile serviceFile = JavaFile.builder(Constants.Domain.API_PACKAGE, serviceSpec).build();
+        JavaFile serviceFile = JavaFile.builder(servicePackage, serviceSpec).build();
         serviceFile.writeToPath(domainPath);
 
+        String apiImplPackage = getPackage(basePackage, Constants.Domain.API_IMPL_PACKAGE);
+        createDirectories(apiImplPackage, domainPath);
         TypeSpec serviceImplSpec = getServiceImplSpec(serviceFile);
-        JavaFile serviceImplFile = JavaFile.builder(Constants.Domain.API_IMPL_PACKAGE, serviceImplSpec).build();
+        JavaFile serviceImplFile = JavaFile.builder(apiImplPackage, serviceImplSpec).build();
         serviceImplFile.writeToPath(domainPath);
 
+        String exceptionPackage = getPackage(basePackage, Constants.Domain.EXCEPTION_PACKAGE);
+        createDirectories(exceptionPackage, domainPath);
         TypeSpec exceptionSpec = getExceptionSpec(entityName);
-        JavaFile.builder(Constants.Domain.EXCEPTION_PACKAGE, exceptionSpec).build().writeToPath(domainPath);
+        JavaFile.builder(exceptionPackage, exceptionSpec).build().writeToPath(domainPath);
     }
 
     private TypeSpec getPortSpec(String entityName) {
