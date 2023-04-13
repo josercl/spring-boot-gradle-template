@@ -89,7 +89,6 @@ public class ApplicationGenerator extends IGenerator {
                 AnnotationSpec.builder(Mapper.class)
                     .addMember("injectionStrategy", "$L", "org.mapstruct.InjectionStrategy.CONSTRUCTOR")
                     .addMember("componentModel", "$L", "org.mapstruct.MappingConstants.ComponentModel.SPRING")
-                    .addMember("uses", "{$L}", "PagedMapper.class")
                     .build()
             )
             .build();

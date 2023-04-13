@@ -2,6 +2,15 @@
 
 Edita el archivo api-specs/src/main/resources/api-spec.yaml
 
+Inicialización
+
+Editar el archivo build.gradle de la raíz del proyecto y cambiar la variable "group"
+al paquete de java que se quiere usar y después ejecutar:
+
+```bash
+./gradlew initProject
+```
+
 Generar código en base a ese archivo
 
 Código de Servidor:
@@ -33,3 +42,9 @@ chmod +x ./gradlew
 
 Eso genera clases entidad, clase de dominio, mappers, repositorios, ports, adapters y servicios usando como base el(los)
 nombre(s) de las clases argumentos
+
+# Para correr el servicio
+
+```bash
+./gradlew bootRun
+```

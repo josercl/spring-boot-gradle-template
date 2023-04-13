@@ -1,8 +1,10 @@
+import com.gitlab.josercl.tasks.InitProjectTask
+
 plugins {
     id 'java'
 }
 
-group = 'my.group'
+group = 'com.example'
 version = '1.0'
 sourceCompatibility = 17
 targetCompatibility = 17
@@ -35,4 +37,8 @@ tasks.register('dockerize', Exec) {
         '-t', "${project.name}:${project.version}",
         '-t', "${project.name}:latest",
         '.'
+}
+
+tasks.register('initProject', InitProjectTask) {
+    group = 'initialization'
 }

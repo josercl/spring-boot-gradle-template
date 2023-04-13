@@ -21,11 +21,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.lang.model.element.Modifier;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
 import java.util.List;
 
 public class InfraGenerator extends IGenerator {
@@ -62,13 +59,13 @@ public class InfraGenerator extends IGenerator {
 
         String mapperPackage = getPackage(basePackage, Constants.Infrastructure.MAPPER_PACKAGE);
         createDirectories(mapperPackage, infrastructurePath);
-        TypeSpec mapperSpec = getMapperSpec(entityFile);
+        TypeSpec mapperSpec = getMapperSpec(entityFile, basePackage);
         JavaFile mapperFile = JavaFile.builder(mapperPackage, mapperSpec).build();
         mapperFile.writeToPath(infrastructurePath);
 
         String adapterPackage = getPackage(basePackage, Constants.Infrastructure.ADAPTER_PACKAGE);
         createDirectories(adapterPackage, infrastructurePath);
-        TypeSpec adapterSpec = getAdapterSpec(entityFile, repositoryFile, mapperFile);
+        TypeSpec adapterSpec = getAdapterSpec(entityFile, repositoryFile, mapperFile, basePackage);
         JavaFile adapterFile = JavaFile.builder(adapterPackage, adapterSpec).build();
         adapterFile.writeToPath(infrastructurePath);
     }
@@ -89,7 +86,7 @@ public class InfraGenerator extends IGenerator {
             .build();
     }
 
-    private TypeSpec getMapperSpec(JavaFile entityFile) {
+    private TypeSpec getMapperSpec(JavaFile entityFile, String basePackage) {
         return TypeSpec.interfaceBuilder(String.format(
                 "%s%s",
                 entityFile.typeSpec.name,
@@ -99,11 +96,14 @@ public class InfraGenerator extends IGenerator {
             .addAnnotation(
                 AnnotationSpec.builder(Mapper.class)
                     .addMember("injectionStrategy", "$L", "org.mapstruct.InjectionStrategy.CONSTRUCTOR")
+                    .addMember("componentModel", "$L", "org.mapstruct.MappingConstants.ComponentModel.SPRING")
                     .build()
             )
             .addMethods(List.of(
                 MethodSpec.methodBuilder("toDomain")
-                    .returns(ClassName.get(Constants.Domain.MODEL_PACKAGE, entityFile.typeSpec.name.replace(Constants.Infrastructure.MODEL_SUFFIX, "")))
+                    .returns(
+                        ClassName.get(basePackage + "." + Constants.Domain.MODEL_PACKAGE, entityFile.typeSpec.name.replace(Constants.Infrastructure.MODEL_SUFFIX, ""))
+                    )
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(
                         ParameterSpec.builder(
@@ -116,11 +116,11 @@ public class InfraGenerator extends IGenerator {
             .build();
     }
 
-    private TypeSpec getAdapterSpec(JavaFile entityFile, JavaFile repositoryFile, JavaFile mapperFile) {
+    private TypeSpec getAdapterSpec(JavaFile entityFile, JavaFile repositoryFile, JavaFile mapperFile, String basePackage) {
         ClassName repositoryType = ClassName.get(repositoryFile.packageName, repositoryFile.typeSpec.name);
         ClassName mapperType = ClassName.get(mapperFile.packageName, mapperFile.typeSpec.name);
         ClassName portType = ClassName.get(
-            Constants.Domain.SPI_PACKAGE,
+            basePackage + "." + Constants.Domain.SPI_PACKAGE,
             portName(entityFile.typeSpec.name.replace(Constants.Infrastructure.MODEL_SUFFIX, ""))
         );
 

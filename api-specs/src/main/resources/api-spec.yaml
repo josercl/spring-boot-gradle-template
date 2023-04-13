@@ -60,22 +60,19 @@ components:
     GenericPage:
       type: object
       properties:
-        meta:
-          type: object
-          properties:
-            page:
-              type: integer
-            size:
-              type: integer
-            total_elements:
-              type: integer
-            total_pages:
-              type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total_elements:
+          type: integer
+        total_pages:
+          type: integer
     PersonPage:
       allOf:
         - type: object
           properties:
-            data:
+            content:
               type: array
               items:
                 $ref: '#/components/schemas/Person'

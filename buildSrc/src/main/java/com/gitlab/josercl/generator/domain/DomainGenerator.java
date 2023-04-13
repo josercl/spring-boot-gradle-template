@@ -38,10 +38,10 @@ public class DomainGenerator extends IGenerator {
         JavaFile serviceFile = JavaFile.builder(servicePackage, serviceSpec).build();
         serviceFile.writeToPath(domainPath);
 
-        String apiImplPackage = getPackage(basePackage, Constants.Domain.API_IMPL_PACKAGE);
-        createDirectories(apiImplPackage, domainPath);
+        String serviceImplPackage = getPackage(basePackage, Constants.Domain.API_IMPL_PACKAGE);
+        createDirectories(serviceImplPackage, domainPath);
         TypeSpec serviceImplSpec = getServiceImplSpec(serviceFile);
-        JavaFile serviceImplFile = JavaFile.builder(apiImplPackage, serviceImplSpec).build();
+        JavaFile serviceImplFile = JavaFile.builder(serviceImplPackage, serviceImplSpec).build();
         serviceImplFile.writeToPath(domainPath);
 
         String exceptionPackage = getPackage(basePackage, Constants.Domain.EXCEPTION_PACKAGE);
@@ -83,7 +83,7 @@ public class DomainGenerator extends IGenerator {
                 )
             )
             .addModifiers(Modifier.PUBLIC)
-            .superclass(ClassName.get(Constants.Domain.EXCEPTION_PACKAGE, "RecordNotFoundException"))
+            .superclass(ClassName.get(Constants.Common.EXCEPTION_PACKAGE, "RecordNotFoundException"))
             .addMethod(
                 MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)

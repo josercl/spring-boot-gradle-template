@@ -10,20 +10,25 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-abstract class GeneratorTask extends DefaultTask {
+public class GeneratorTask extends DefaultTask {
     public GeneratorTask() {
     }
 
     @TaskAction
     public void generate() throws IOException {
-        Object entities = getProject().getProperties().getOrDefault("entities", null);
+        Map<String, ?> projectProperties = getProject().getProperties();
+
+        Object entities = projectProperties.getOrDefault("entities", null);
 
         if (entities == null) return;
 
-        Object only = getProject().getProperties().getOrDefault("only", null);
-
-        Object basePackage = getProject().getProperties().getOrDefault("basePackage", null);
+        Object only = projectProperties.getOrDefault("only", null);
+        String basePackage = Optional.ofNullable(projectProperties.getOrDefault("basePackage", null))
+            .map(String.class::cast)
+            .orElse((String) getProject().getGroup());
 
         List<IGenerator> generatorsToUse = new ArrayList<>();
 

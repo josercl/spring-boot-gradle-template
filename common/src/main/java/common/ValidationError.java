@@ -1,4 +1,4 @@
-package rest.response;
+package common;
 
 import java.util.List;
 
