@@ -9,11 +9,13 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -87,7 +89,7 @@ public class InitProjectTask extends DefaultTask {
         createApplicationConfigurationClass(basePackage);
         createPersistenceConfigurationClass(basePackage);
         JavaFile domainPageFile = createDomainPageClass(basePackage);
-        createPageMapperClass(basePackage, domainPageFile);
+        createBasePageMapperClass(basePackage, domainPageFile);
         createErrorHandlerClass(basePackage);
     }
 
@@ -170,6 +172,7 @@ public class InitProjectTask extends DefaultTask {
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Data.class)
             .addAnnotation(Builder.class)
+            .addAnnotation(AllArgsConstructor.class)
             .addField(ParameterizedTypeName.get(ClassName.get(List.class), typeVariable), "content", Modifier.PRIVATE)
             .addField(Integer.class, "page", Modifier.PRIVATE)
             .addField(Integer.class, "pageSize", Modifier.PRIVATE)
@@ -215,38 +218,37 @@ public class InitProjectTask extends DefaultTask {
         }
     }
 
-    private void createPageMapperClass(String basePackage, JavaFile domainPageSpec) {
+    private void createBasePageMapperClass(String basePackage, JavaFile domainPageSpec) {
         TypeVariableName t = TypeVariableName.get("T");
         ParameterSpec page = ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(Page.class), t), "page").build();
         ClassName domainPage = ClassName.get(domainPageSpec.packageName, domainPageSpec.typeSpec.name);
 
-        TypeSpec pageMapperSpec = TypeSpec.interfaceBuilder("PageMapper")
+        TypeSpec pageMapperSpec = TypeSpec.interfaceBuilder("BasePageMapper")
+            .addTypeVariable(t)
             .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(
-                AnnotationSpec.builder(Mapper.class)
-                    .addMember("injectionStrategy", "$L", "org.mapstruct.InjectionStrategy.CONSTRUCTOR")
-                    .addMember("componentModel", "$L", "org.mapstruct.MappingConstants.ComponentModel.SPRING")
-                    .build()
-            )
             .addMethod(
-                MethodSpec.methodBuilder("toDomain")
-                    .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                    .returns(
-                        ParameterizedTypeName.get(domainPage, t)
-                    )
-                    .addTypeVariable(t)
+                MethodSpec.methodBuilder("toDomainPage")
+                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .returns(ParameterizedTypeName.get(domainPage, t))
                     .addParameter(page)
-                    .addStatement("""
-                        return $T.<$T>builder()
-                            .content($N.getContent())
-                            .totalElements($N.getTotalElements())
-                            .totalPages($N.getTotalPages())
-                            .pageSize($N.getSize())
-                            .page($N.getNumber())
-                            .build()""",
-                        domainPage,
-                        t,
-                        page,page,page,page,page
+                    .addAnnotation(
+                        AnnotationSpec.builder(Mapping.class)
+                            .addMember("target", "$S", "pageSize")
+                            .addMember("source", "$S", "size")
+                            .build()
+                    )
+                    .addAnnotation(
+                        AnnotationSpec.builder(Mapping.class)
+                            .addMember("target", "$S", "page")
+                            .addMember("source", "$S", "number")
+                            .build()
+                    )
+                    .addAnnotation(
+                        AnnotationSpec.builder(Mapping.class)
+                            .addMember("target", "$S", "content")
+                            .addMember("source", "$S", "content")
+                            .addMember("defaultExpression", "$S", "java(java.util.List.of())")
+                            .build()
                     )
                     .build()
             )
@@ -282,12 +284,12 @@ public class InitProjectTask extends DefaultTask {
             .returns(ParameterizedTypeName.get(responseEntity, errorDTO))
             .addParameter(exArgument)
             .addStatement("""
-                    return $T.status($N.getCode())
-                    .body(
-                        new $T()
-                            .code($N.getCode().value())
-                            .message($N.getMessage())
-                    )""", ResponseEntity.class, exArgument, errorDTO, exArgument, exArgument)
+                return $T.status($N.getCode())
+                .body(
+                    new $T()
+                        .code($N.getCode().value())
+                        .message($N.getMessage())
+                )""", ResponseEntity.class, exArgument, errorDTO, exArgument, exArgument)
             .build();
     }
 
@@ -361,17 +363,17 @@ public class InitProjectTask extends DefaultTask {
         }
 
         builder.addStatement("""
-                        $T<$T> errorList = $N.getBindingResult()
-                            .getFieldErrors()
-                            .stream()
-                            .collect($T.groupingBy(
-                                $T::getField,
-                                Collectors.mapping($T::getDefaultMessage, Collectors.toList())
-                            ))
-                            .entrySet()
-                            .stream()
-                            .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
-                            .toList()""",
+                    $T<$T> errorList = $N.getBindingResult()
+                        .getFieldErrors()
+                        .stream()
+                        .collect($T.groupingBy(
+                            $T::getField,
+                            Collectors.mapping($T::getDefaultMessage, Collectors.toList())
+                        ))
+                        .entrySet()
+                        .stream()
+                        .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
+                        .toList()""",
                 List.class,
                 ClassName.get("common", "ValidationError"),
                 exParameter,
