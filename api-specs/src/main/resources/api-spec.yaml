@@ -23,12 +23,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Person"
+        '422':
+          $ref: "#/components/responses/InvalidRequest"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
         default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/DefaultError"
     get:
       summary: List Persons
       operationId: listPersons
@@ -48,14 +50,72 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonPage"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
         default:
-          description: unexpected error
+          $ref: "#/components/responses/DefaultError"
+  /persons/{id}:
+    get:
+      summary: Show Person
+      operationId: showPerson
+      tags:
+        - persons
+      x-webclient-blocking: true
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Person"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/DefaultError"
 
 components:
+  responses:
+    InvalidRequest:
+      description: Invalid request input
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationErrors"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    DefaultError:
+      description: Unexpected Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
   schemas:
     GenericPage:
       type: object
@@ -120,6 +180,18 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Person"
+    ValidationErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValidationError'
+    ValidationError:
+      properties:
+        field:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
     Error:
       required:
         - code
