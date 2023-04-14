@@ -1,8 +1,4 @@
-# API
-
-Edita el archivo api-specs/src/main/resources/api-spec.yaml
-
-Inicialización
+# Inicialización
 
 Editar el archivo build.gradle de la raíz del proyecto y cambiar la variable "group"
 al paquete de java que se quiere usar y después ejecutar:
@@ -10,6 +6,10 @@ al paquete de java que se quiere usar y después ejecutar:
 ```bash
 ./gradlew initProject
 ```
+
+# API
+
+Edita el archivo `api-specs/src/main/resources/api-spec.yaml`
 
 Generar código en base a ese archivo
 
