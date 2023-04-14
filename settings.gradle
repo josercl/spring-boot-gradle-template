@@ -1,3 +1,16 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://gitlab.com/api/v4/projects/45177707/packages/maven'
+        }
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.gitlab.josercl:generator:1.0'
+    }
+}
+
 rootProject.name = 'spring-boot-gradle-template'
 include ':api-specs'
 include ':application'

@@ -1,7 +1,6 @@
-import com.gitlab.josercl.tasks.InitProjectTask
-
 plugins {
     id 'java'
+    id 'com.gitlab.josercl.generator'
 }
 
 group = 'com.example'
@@ -26,9 +25,6 @@ subprojects {
     }
 }
 
-tasks.register('generate', com.gitlab.josercl.tasks.GeneratorTask) {
-    group = 'code'
-}
 
 tasks.register('dockerize', Exec) {
     dependsOn ':boot:bootJar'
@@ -37,8 +33,4 @@ tasks.register('dockerize', Exec) {
         '-t', "${project.name}:${project.version}",
         '-t', "${project.name}:latest",
         '.'
-}
-
-tasks.register('initProject', InitProjectTask) {
-    group = 'initialization'
 }
