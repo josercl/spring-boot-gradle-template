@@ -16,13 +16,13 @@ Generar código en base a ese archivo
 Código de Servidor:
 
 ```bash
-./gradlew :api-specs:generate-server
+./gradlew :api-specs:generateServer
 ```
 
 Código para clientes:
 
 ```bash
-./gradlew :api-specs:generate-client
+./gradlew :api-specs:generateClient
 ```
 
 Para generar el jar de cliente:
@@ -37,7 +37,7 @@ chmod +x ./gradlew
 # Generar entidades, modelo, servicios, repos, etc.
 
 ```bash
-./gradlew generate -Pentities=clase1,clase2,...,claseN [-Ponly=domain|app|infra] [-PbasePackage=xxx.yyy.zzz]
+./gradlew generateCrud -Pentities=clase1,clase2,...,claseN [-Ponly=domain|app|infra] [-PbasePackage=xxx.yyy.zzz]
 ```
 
 Eso genera clases entidad, clase de dominio, mappers, repositorios, ports, adapters y servicios usando como base el(los)
