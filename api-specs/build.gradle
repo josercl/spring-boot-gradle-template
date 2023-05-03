@@ -37,7 +37,7 @@ dependencies {
 tasks.bootJar { enabled = false }
 tasks.bootRun { enabled = false }
 
-tasks.compileJava.dependsOn('generate-server')
+tasks.compileJava.dependsOn('generateServer')
 
 tasks.register('generateServer', org.openapitools.generator.gradle.plugin.tasks.GenerateTask.class) {
     group = 'code'
