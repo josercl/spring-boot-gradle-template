@@ -3,7 +3,7 @@ plugins {
     id 'com.gitlab.josercl.generator'
 }
 
-group = 'com.example'
+group = '$PKG'
 version = '1.0'
 sourceCompatibility = 17
 targetCompatibility = 17
@@ -27,6 +27,7 @@ subprojects {
 
 
 tasks.register('dockerize', Exec) {
+    group 'docker'
     dependsOn ':boot:bootJar'
 
     commandLine 'docker', 'build',
