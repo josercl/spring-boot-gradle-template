@@ -4,7 +4,7 @@ Editar el archivo build.gradle de la raíz del proyecto y cambiar la variable "g
 al paquete de java que se quiere usar y después ejecutar:
 
 ```bash
-./gradlew initProject
+./gradlew initProject -PbasePackage=xxx.yyy.zzz -PprojectName=project_name_here
 ```
 
 # API

@@ -21,8 +21,6 @@ sourceSets {
 }
 
 dependencies {
-    implementation project(':common')
-
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.data:spring-data-commons'
 
