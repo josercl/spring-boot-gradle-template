@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
-    id "org.openapi.generator" version "6.3.0"
+    id "org.openapi.generator" version "6.6.0"
 }
 
 ext {
@@ -66,6 +66,7 @@ tasks.register('generateServer', org.openapitools.generator.gradle.plugin.tasks.
         'dateLibrary'          : "java8",
         'booleanGetterPrefix'  : 'is',
         'useSpringBoot3'       : 'true',
+        'useResponseEntity'    : 'false',
     ]
 }
 
