@@ -1,7 +1,7 @@
-# Inicialización
+# Inicialization
 
-Editar el archivo build.gradle de la raíz del proyecto y cambiar la variable "group"
-al paquete de java que se quiere usar y después ejecutar:
+Edit the project level build.gradle file and change the "group" variable to the java package
+you will use and then execute:
 
 ```bash
 ./gradlew initProject -PbasePackage=xxx.yyy.zzz -PprojectName=project_name_here
@@ -9,23 +9,23 @@ al paquete de java que se quiere usar y después ejecutar:
 
 # API
 
-Edita el archivo `api-specs/src/main/resources/api-spec.yaml`
+Edit the API spec file (`api-specs/src/main/resources/api-spec.yaml`)
 
-Generar código en base a ese archivo
+Generate code using based on that file
 
-Código de Servidor:
+Server-side Code:
 
 ```bash
 ./gradlew :api-specs:generateServer
 ```
 
-Código para clientes:
+Client-side code:
 
 ```bash
 ./gradlew :api-specs:generateClient
 ```
 
-Para generar el jar de cliente:
+To generate the client-side jar:
 
 ```bash
 cd api-specs/build/generated/client
@@ -34,16 +34,16 @@ chmod +x ./gradlew
 ./gradlew publishMavenPublicationToMavenLocal
 ```
 
-# Generar entidades, modelo, servicios, repos, etc.
+# Generate entities, model, services, repositories, etc.
 
 ```bash
-./gradlew generateCrud -Pentities=clase1,clase2,...,claseN [-Ponly=domain|app|infra] [-PbasePackage=xxx.yyy.zzz]
+./gradlew generateCrud -Pentities=class1,class2,...,classN [-Ponly=domain|app|infra] [-PbasePackage=xxx.yyy.zzz]
 ```
 
-Eso genera clases entidad, clase de dominio, mappers, repositorios, ports, adapters y servicios usando como base el(los)
-nombre(s) de las clases argumentos
+This will generate entity classes, domain models, mappers, repositories, ports/adapters and services using
+as base the name of the entities specified
 
-# Para correr el servicio
+# To run the project
 
 ```bash
 ./gradlew bootRun
