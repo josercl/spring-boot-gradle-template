@@ -1,8 +1,14 @@
 plugins {
     id 'java-library'
-    id 'org.springframework.boot' version '3.0.6'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
+
+//repositories {
+//    maven {
+//        url 'https://gitlab.com/api/v4/projects/52495705/packages/maven'
+//    }
+//}
 
 tasks.bootJar { enabled = false }
 tasks.bootRun { enabled = false }
@@ -12,6 +18,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'com.h2database:h2'
+//    implementation 'com.gitlab.josercl:spring-boot-search-utils:1.0'
 //    implementation 'com.mysql:mysql-connector-j'
 //    implementation 'org.postgresql:postgresql'
 }
