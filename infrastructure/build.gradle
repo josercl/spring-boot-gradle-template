@@ -5,6 +5,7 @@ plugins {
 }
 
 //repositories {
+//    mavenLocal()
 //    maven {
 //        url 'https://gitlab.com/api/v4/projects/52495705/packages/maven'
 //    }

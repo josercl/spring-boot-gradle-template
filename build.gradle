@@ -12,6 +12,7 @@ subprojects {
     apply plugin: 'java'
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url 'https://repo.spring.io/milestone' }
         maven { url = 'https://maven.fabricmc.net/' }
