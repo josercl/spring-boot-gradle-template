@@ -3,10 +3,9 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url 'https://gitlab.com/api/v4/projects/45177707/packages/maven' }
-        maven { url = 'https://maven.fabricmc.net/' }
     }
     dependencies {
-        classpath 'com.gitlab.josercl:generator_plugin:1.3.9'
+        classpath 'com.gitlab.josercl:generator_plugin:1.4.0'
     }
 }
 
